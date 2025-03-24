@@ -13,4 +13,7 @@ class Time{
         string m;
     public:
         Time(int hh = 0, int mm = 0, int ss = 0, string n = "a.m.");
+        void showTime();
+        int verificador(int hh, int mm, int ss, string n);
+        void interfaz();
 };
