@@ -7,13 +7,13 @@ using namespace std;
 
 class Time{
     private:
-        int horas;
-        int minutos;
-        int segundos;
-        string m;
+        int hours;
+        int minutes;
+        int seconds;
+        string period;
     public:
-        Time(int hh = 0, int mm = 0, int ss = 0, string n = "a.m.");
+        Time(int hh = 0, int mm = 0, int ss = 0, string p = "a.m.");
         void showTime();
-        int verificador(int hh, int mm, int ss, string n);
-        void interfaz();
+        void format();
+        void funcionality();
 };
