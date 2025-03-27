@@ -6,6 +6,8 @@
 
 using namespace std;
 
+void menu();
+
 class Student{
     private:
         string full_name;
@@ -23,7 +25,7 @@ class Course{
     private:
         vector<Student> students; 
     public:
-        Course(vector<Student> st);
+        Course();
         Course(const Course& cs) : Course(new Course(cs.students)){}
         void enroll(Student st);
         void deEnroll(Student st);

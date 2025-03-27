@@ -35,9 +35,7 @@ ostream& operator<<(ostream& os, Student S){
 //b.
 // Clase Curso
 
-Course::Course(vector<Student> st){
-    students = st;
-}
+Course::Course(){}
 
 ///i
 void Course::enroll(Student st){
@@ -80,7 +78,7 @@ void Course::isFull(){
 void Course::printStudents(){
     sort(students.begin(), students.end());
     if(students.empty()){
-        cout << "El curso está vacío, terminando proceso." << endl;
+        cout << "El curso está vacío." << endl;
         return;
     }
     for(int i = 0; i < students.size(); i++){
@@ -92,4 +90,50 @@ void Course::printStudents(){
 ///v
 
 
+
+
+
+
+
+
+//Menú para evaluar lo pedido
+
+void menu(Course cs){
+    cout << "Generando estudiantes aleatorios:" << endl;
+    vector<void> l1;
+    Student s1((string)"Tomás Ocaña", 100, l1);
+    cout << s1;     // Utilizo el operador sobrecargado "<<" para imprimir a los estudiantes
+    vector<void> l2;
+    Student s2((string)"Nacho Rodriguez", 200, l2);
+    cout << s2;
+    vector<void> l3;
+    Student s3((string)"Roberto Carlos", 300, l3);
+    cout << s3;
+
+    Course cs();
+    cout << "imprimiendo el curso... " << endl;
+    cs.printStudents();
+    cout << "Inscribiendo a los estudiantes;" << endl;
+    cs.enroll(s1);
+    cs.printStudents();
+    cs.enroll(s2);
+    cs.printStudents();
+    cs.enroll(s3);
+    cs.printStudents();
+    cs.isFull();
+    cout << "Tomás está inscripto en el curso?" << endl;
+    cs.isEnrolled(s1.get_file());
+    cout << "Tomás se dio de baja, desinscribiendo del curso" << endl;
+    cout << "Tomás está inscripto en el curso?" << endl;
+    cs.isEnrolled(s1.get_file());
+    cs.isFull();
+    cs.printStudents();
+
+    cout << "Creando nuevo curso..." << endl;
+    Course cos;
+    cout << "Copiando el curso 1 en el curso 2..." << endl;
+    cos = cs;
+    cout << "Imprimiendo alumnos del curso 2:" << endl;
+    cos.printStudents();
+}
 
