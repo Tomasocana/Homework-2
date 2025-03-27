@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -15,6 +16,7 @@ class Student{
         string get_fullName();
         int get_file();
         float get_average();
+        friend ostream& operator<<(ostream& os, const Course& c);
 };
 
 class Course{
@@ -22,10 +24,10 @@ class Course{
         vector<Student> students; 
     public:
         Course(vector<Student> st);
+        Course(const Course& cs) : Course(new Course(cs.students)){}
         void enroll(Student st);
-        void Course::deEnroll(Student st);
+        void deEnroll(Student st);
         void isEnrolled(int f);
         void isFull();
         void printStudents();
-        // funcion para copiar
 };

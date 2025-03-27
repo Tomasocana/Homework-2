@@ -1,5 +1,6 @@
 #include "curso.h"
 
+//a.
 // Clase estudiante
 
 Student::Student(string fullName, int f, vector<void> cl){
@@ -25,13 +26,20 @@ float Student::get_average(){
     return av;
 }
 
+ostream& operator<<(ostream& os, Student S){
+    os << "  Nombre completo: " << S.get_fullName() << "\n" << "  Legajo: " << S.get_file() << "\n" << "  Promedio" << S.get_average() << endl;
+    return os;
+}
 
+
+//b.
 // Clase Curso
 
 Course::Course(vector<Student> st){
     students = st;
 }
 
+///i
 void Course::enroll(Student st){
     if(students.size() == 20){
         cout << "Curso completo, no se puede inscribir." << endl;
@@ -51,6 +59,7 @@ void Course::deEnroll(Student st){
     }
 }
 
+///ii
 void Course::isEnrolled(int f){
     for(int i = 0; i < students.size(); i++){
         if(students[i].get_file() == f){
@@ -60,13 +69,27 @@ void Course::isEnrolled(int f){
     cout << "El alumno no se encuentra inscripto en el curso." << endl;
 }
 
+///iii
 void Course::isFull(){
     int n = students.size();
     if(n == 20) cout << "El curso está completo." << endl;
     else cout << "El curso no está completo, cuenta con " << n << "alumnos" << endl;
 }
 
+///iv
 void Course::printStudents(){
-    
+    sort(students.begin(), students.end());
+    if(students.empty()){
+        cout << "El curso está vacío, terminando proceso." << endl;
+        return;
+    }
+    for(int i = 0; i < students.size(); i++){
+        cout << "Estudiante N° " << i << endl;
+        cout<<students[i];
+    }
 }
+
+///v
+
+
 
