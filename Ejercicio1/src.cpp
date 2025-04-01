@@ -25,50 +25,104 @@ void Time::format(){
 
 //i
 void Time::funcionality(){
-    int hh, mm, ss;
-    string period;
-    cout << "Introduzca la hora deseada: ";
-    cin >> hh;
-    if (hh > 12){
-        while (hh > 12){
-            int opt;
-            cout << "Hora fuera de rango." << endl;
-            cout << "1. ¿Ingresar un nuevo valor?" << endl;
-            cout << "2. Salir" << endl;
-            cout << "Respuesta = ";
-            cin >> opt;
-            switch (opt){
-                case 1:
-                    cout << "Ingresar nuevo valor: ";
-                    cin >> hh;
-                    break;
-                case 2:
-                    cout << "Saliendo del proceso." << endl;
-                    return;
+    bool cond1 = true;
+    while(cond1){
+        int opt;
+        cout << "¿Qué desea hacer?" << endl;
+        cout << "1. Inicializar la hora sin parámetros" << endl;
+        cout << "2. Inicializar solo con la hora" << endl;
+        cout << "3. Iniializar con la hora y los minutos" << endl;
+        cout << "4. Inicializar con la hora, los minutos y los segundos" << endl;
+        cout << "5. Inicializar con todo" << endl;
+        cin >> opt;
+        int hh, mm, ss;
+        string period;
+        bool cond2 = true;
+        switch(opt){
+            case 1:{
+                Time T();
+                break;
+            }
+            case 2:{
+                cout << "Introduzca la hora deseada: ";
+                cin >> hh;
+                int option;
+                while (hh > 12){
+                    cout << "Hora fuera de rango." << endl;
+                    cout << "1. ¿Ingresar un nuevo valor?" << endl;
+                    cout << "2. Salir" << endl;
+                    cout << "Respuesta = ";
+                    cin >> option;
+                    switch (option){
+                        case 1:{
+                            cout << "Ingresar nuevo valor: ";
+                            cin >> hh;
+                            break;
+                        }
+                        case 2:{
+                            hh = 0;
+                            break;
+                        }
+                    }
+                    if(option == 2)break;
+                }
+                Time T(hh);
+                break;
+            }
+            case 3:{
+                cout << "Introduzca la hora deseada: ";
+                cin >> hh;
+                int option;
+                while (hh > 12){
+                    cout << "Hora fuera de rango." << endl;
+                    cout << "1. ¿Ingresar un nuevo valor?" << endl;
+                    cout << "2. Salir" << endl;
+                    cout << "Respuesta = ";
+                    cin >> option;
+                    switch (option){
+                        case 1:{
+                            cout << "Ingresar nuevo valor: ";
+                            cin >> hh;
+                            break;
+                        }
+                        case 2:{
+                            hh = 0;
+                            break;
+                        }
+                    }
+                }
+                if(option == 2)break;
+
+                cout << "Introduza los minutos deseados: ";
+                cin >> mm;
+                while (mm > 60){
+                    cout << "Minutos fuera de rango." << endl;
+                    cout << "1. ¿Ingresar un nuevo valor?" << endl;
+                    cout << "2. Salir" << endl;
+                    cout << "Respuesta = ";
+                    cin >> opt;
+                    switch (opt){
+                        case 1:{
+                            cout << "Ingresar nuevo valor: ";
+                            cin >> mm;
+                            break;
+                        }
+                        case 2:{
+                            mm = 0;
+                            break;
+                        }
+                    }
+                }
+                if(option == 2)break;
+                Time T(hh,mm);
+                break;
+            }
+            case 4:{
+
             }
         }
     }
-    cout << "Introduza los minutos deseados: ";
-    cin >> mm;
-    if (mm >= 60){
-        while (mm > 12){
-            int opt;
-            cout << "Minutos fuera de rango." << endl;
-            cout << "1. ¿Ingresar un nuevo valor?" << endl;
-            cout << "2. Salir" << endl;
-            cout << "Respuesta = ";
-            cin >> opt;
-            switch (opt){
-                case 1:
-                    cout << "Ingresar nuevo valor: ";
-                    cin >> mm;
-                    break;
-                case 2:
-                    cout << "Saliendo del proceso." << endl;
-                    return;
-            }
-        }
-    }
+
     cout << "Introduzca los segundos desados: ";
     cin >> ss;
     if (ss >= 60){
@@ -111,9 +165,6 @@ void Time::funcionality(){
             }
         }
     }
-    Time t(hh, mm, ss, period);
-    cout << "Su hora actual es: ";
-    t.showTime();
     int option;
     cout << "Que desea hacer?" << endl;
     cout << "1. Leer hora" << endl;
