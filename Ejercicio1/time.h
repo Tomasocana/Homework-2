@@ -15,6 +15,6 @@ class Time{
         Time(int hh = 0, int mm = 0, int ss = 0, string p = "a.m.");
         void showTime();
         void format();
-        void funcionality();
-        void funcionalityContinue(int hh = 0, int mm = 0, int ss = 0, string p = "a.m.");
+        void interface();
+        void interfaceContinue(int hh = 0, int mm = 0, int ss = 0, string p = "a.m.");
 };

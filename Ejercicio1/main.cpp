@@ -4,6 +4,6 @@ using namespace std;
 
 int main(){
     Time t;
-    t.funcionality();
+    t.interface();
     return 0;
 }
