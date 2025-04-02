@@ -32,7 +32,7 @@ float Student::get_average(){
     float av = 0;
     if(!grade_list.empty()){
         float cont = 0;
-        for(int i = 0; i < (int)grade_list.size(); i++){
+        for(int i = 0; i < (int)grade_list.size(); i++){ // Itero y voy sumando los valores de las notas para sacar el promedio
             av += grade_list[i];
             cont++;
         }
@@ -41,9 +41,24 @@ float Student::get_average(){
     return av;
 }
 
-void Student::addCourse(string courseName) {course_list.push_back(new Course(courseName));}
+void Student::addCourse(string courseName){course_list.push_back(new Course(courseName));}
 
 void Student::addGrade(int grade){grade_list.push_back(grade);}
+
+void Student::popGrade(vector<int>::iterator pos){ // con find() busco la nota en la lista de notas del curso
+    grade_list.erase(pos);
+}
+
+void Student::popCourse(string courseName){
+    auto coursePos = find(course_list.begin(), course_list.end(), courseName); // con find() busco la nota en la lista de notas del curso
+    if (coursePos != course_list.end()) { // Y si find() no encuentra lo pedido, devuelve el último objeto del vector, por eso este if
+        course_list.erase(coursePos);
+        
+        size_t index = distance(course_list.begin(), coursePos); // Hago la conversión de un iterador de objetos Curso* a un iterador de int
+        auto gradePos = grade_list.begin() + index;
+        popGrade(gradePos); // Asi quito la nota asociada al curso que se quitó.
+    }
+}
 
 vector<Course*> Student::get_course_list(){return course_list;}
 
@@ -62,10 +77,9 @@ Course::Course(string name){course_name = name;}
 
 Course::Course(const Course& cs, bool deepCopy){
     course_name = cs.course_name;
-    if(deepCopy){
+    if(deepCopy){ // Deepcopy es un parametro para decidir si hacer un shallow copy o un deepcopy del curso.
         for(auto student : cs.students){
             students.push_back(new Student(*student));
-            delete student;
         }
     }else students = cs.students;
 }
@@ -90,20 +104,21 @@ void Course::deEnroll(Student* st) {
     if (students.empty()) {
         cout << "Curso vacío, no se puede desinscribir el estudiante." << endl;
     } else {
-        auto it = find(students.begin(), students.end(), st);
-        if (it != students.end()) {
-            students.erase(it);
+        auto it = find(students.begin(), students.end(), st); // con find() busco al estudiante en la lista de los estudiantes del curso
+        if (it != students.end()) { // Y si find() no encuentra lo pedido, devuelve el último objeto del vector, por eso este if
+            students.erase(it); // Elimina el estudiante de la lista de estudiantes
+            st->popCourse(course_name); // Elimina el curso de la lista de cursos inscripto del estudiante
         }
+        else cout << "El estudiante no forma parte de este curso" << endl;
     }
 }
 
 ///ii
 bool Course::isEnrolled(int f){
-    for(auto i : students){
-        if(i->get_file() == f){
+    for(auto i : students){ // Itero sobre la lista de estudiantes
+        if(i->get_file() == f){ // Hasta encontrar el estudiante pedido mediante su legajo
             return true;
         }
-        delete i;
     }
     return false;
 }
@@ -117,14 +132,14 @@ void Course::isFull(){
 
 ///iv
 void Course::printStudents(){
-    sort(students.begin(), students.end());
+    sort(students.begin(), students.end()); // Ordeno el vector 
     if(students.empty()){
         cout << "El curso está vacío." << endl;
         return;
     }
     for(int i = 0; i < (int)students.size(); i++){
-        cout << "Estudiante N° " << i + 1 << ": " << endl;;
-        cout<<students[i];
+        cout << "Estudiante N° " << i + 1 << ": " << endl; // Itero la lista de estudiantes 
+        cout<<students[i]; // Y los voy imprimiendo utilizando la sobrecarga del operador "<<"
         cout << endl;
     }
 }
@@ -132,13 +147,12 @@ void Course::printStudents(){
 string Course::getCourseName(){return course_name;}
 
 
-
 //Menú para evaluar lo pedido
 
 void menu(){
-    vector<Course*> cc;
-    vector<Student*> cs;
-    bool first_cond = true;
+    vector<Course*> cc; // Lista de cursos para ir guardandome en memoria los cursos que va creando el usuario
+    vector<Student*> cs; // Y lo mismo para la lista de estudiantes
+    bool first_cond = true; // Condición para cortar el programa
     while(first_cond){
         int opt;
         cout << "Qué quiere hacer?" << endl;
@@ -150,16 +164,16 @@ void menu(){
         cout << "Respuesta: ";
         cin >> opt;
         switch(opt){
-            case 1:{
+            case 1:{ // Crear curso
                 string n;
                 cout << "Introduzca el nombre del curso: ";
                 cin >> n;
-                Course* cs1 = new Course(n);
+                Course* cs1 = new Course(n); // Creo un puntero al curso
                 cout << "Curso creado con éxito." << endl;
-                cc.push_back(cs1);
+                cc.push_back(cs1); // Y lo mando a la lista de cursos
                 break;
             }
-            case 2:{
+            case 2:{ // Crear estudiante
                 string name;
                 int file;
                 vector<Course*> courselist;
@@ -168,34 +182,34 @@ void menu(){
                 cout << "Introduzca el legajo del alumno: ";
                 cin >> file;
                 cout << "Estudiante creado con éxito." << endl;
-                Student* s1 = new Student(name, file, courselist);
-                cs.push_back(s1);
+                Student* s1 = new Student(name, file, courselist); // Creo un puntero al estudiante
+                cs.push_back(s1); // Y lo mando a la lista de estudiantes
                 break;
             }
-            case 3:{
+            case 3:{ // Abrir interfaz de estudiantes
                 cout << "Abriendo nueva interfaz..." << endl;
-                bool cond1 = true;
+                bool cond1 = true; // Condición de corte
                 while(cond1){
                     int file;
                     cout << "Introduzca el legajo del estudiante al que desea acceder: ";
                     cin >> file;
                     int cont = 0;
                     int j = 0;
-                    for(int i = 0; i < (int)cs.size(); i++){
+                    for(int i = 0; i < (int)cs.size(); i++){ //Itero sobre la lista de los estudiantes en búsqueda del estudiante solicitado
                         if(cs[i]->get_file() == file){
-                            j = 1;
+                            j = 1; // Dejo j = 1 como flag para definir o no el objeto a estudiante
                             break;
                         }
                         cont++;
 
                     }
                     Student* s;
-                    if (j == 1) s = cs[cont];
+                    if (j == 1) s = cs[cont]; // Hago una copia del estudiante para trabajar 
                     else{
                         cout << "No existe estudiante con ese legajo" << endl;
                         continue;
                     }
-                    bool cond2 = true;
+                    bool cond2 = true; // Condición de corte
                     while(cond2){
                         int option;
                         cout << "¿Qué desea hacer?" << endl;
@@ -207,33 +221,32 @@ void menu(){
                         cout << "Respuesta: " << endl;
                         cin >> option;
                         switch(option){
-                            case 1:{
+                            case 1:{ // ¿Nombre completo?
                                 cout << "El nombre completo del estudiante es " << s->get_fullName() << "." << endl;
                                 break;
                             }
-                            case 2:{
+                            case 2:{ //¿Promedio?
                                 cout << "El promedio del estudiante es de: " << s->get_average() << "." << endl;
                                 break;
                             }
-                            case 3:{
-                                vector<Course*> l = s->get_course_list();
+                            case 3:{ // ¿Cursos inscripto?
+                                vector<Course*> l = s->get_course_list(); // Aduquiero la lista de cursos a las que esta inscripto el estudiante
                                 if(l.empty()){
                                     cout << "El estudiante no esta inscripto a ningun curso" << endl;
                                     break;
                                 }
                                 cout << "El estudiante está insripto a los cursos de: ";
-                                for(auto i : l){
+                                for(auto i : l){ // Itero la lista y voy imprimiendo el nombre de los cursos a los que esta inscripto
                                     cout << i->getCourseName() << " ";
-                                    delete i;
                                 }   
                                 cout << endl;
                                 break;
                             }
-                            case 4:{
+                            case 4:{ // Cambio de estudiante
                                 cond2 = false;
                                 break;
                             }
-                            case 5:{
+                            case 5:{ // Salir de la interfaz
                                 cond2 = false;
                                 cond1 = false;
                                 break;
@@ -247,7 +260,7 @@ void menu(){
                 }
                 break;
             }
-            case 4:{
+            case 4:{ // Abrir la interfaz de cursos
                 cout << "Abriendo nueva interfaz..." << endl;
                 bool cond1 = true;
                 while(cond1){
@@ -256,7 +269,7 @@ void menu(){
                     cin >> n;
                     int cont = 0;
                     int j = 0;
-                    for(auto i : cc){
+                    for(auto i : cc){ // Itero en la lista de cursos para buscar si existe el curso solicitado
                         if(i->getCourseName() == n){
                             j = 1;
                             break;
@@ -265,7 +278,7 @@ void menu(){
                         cont++;
                     }
                     Course* course_copy;
-                    if(j == 1) course_copy = new Course(*cc[cont], true);
+                    if(j == 1) course_copy = new Course(*cc[cont], true); // Si existe, me creo un puntero copia del curso
                     else{
                         cout << "No existe curso con ese nombre" << endl;
                         continue;
@@ -287,26 +300,25 @@ void menu(){
                         int file;
                         int j = 0;
                         switch(option){
-                            case 1:{
+                            case 1:{ // Inscribir estudiante
                                 cout << "Introducir el legajo del estudiante: ";
                                 cin >> file;
-                                for(auto i : cs){
+                                for(auto i : cs){ // Me fijo si existe el estudiante que se quiere asignar 
                                     if(i->get_file() == file){
-                                        course_copy->enroll(i);
+                                        course_copy->enroll(i); // Y si existe, lo inscribo
                                         j = 1;
                                         break;
                                     }
-                                    delete i;
                                 }
                                 if(j == 0)cout << "No existe estudiante con ese legajo" << endl;
                                 break;
-                            }
-                            case 2:{
+                            } 
+                            case 2:{ // Desinscribir estudiante
                                 cout << "Introducir el legajo del estudiante: ";
                                 cin >> file;
                                 for(auto i : cs){
-                                    if(i->get_file() == file){
-                                        course_copy->deEnroll(i);
+                                    if(i->get_file() == file){ // Del mismo modo me fijo si existe el estudiante
+                                        course_copy->deEnroll(i); // Y si existe lo desinscribo
                                         j = 1;
                                         break;
                                     }
@@ -315,12 +327,12 @@ void menu(){
                                 if(j == 0) cout << "No existe estudiante con ese legajo" << endl;
                                 break;
                             }
-                            case 3:{
+                            case 3:{ // ¿El estudiante forma parte del curso?
                                 cout << "Introducir el legajo del estudiante: ";
                                 cin >> file;
-                                for(auto i : cs){
+                                for(auto i : cs){ // Me fijo si existe el estudiante
                                     if(i->get_file() == file){
-                                        if(course_copy->isEnrolled(file)) cout << "El alumno forma parte del curso." << endl;
+                                        if(course_copy->isEnrolled(file)) cout << "El alumno forma parte del curso." << endl; 
                                         else cout << "El alumno no forma parte del curso." << endl;
                                         j = 1;
                                         break;
@@ -330,18 +342,18 @@ void menu(){
                                 if(j == 0) cout << "No existe estudiante con ese legajo" << endl;
                                 break;
                             }
-                            case 4:{
+                            case 4:{ // ¿Está lleno el curso?
                                 course_copy->isFull();
                                 break;
                             }
-                            case 5:{
+                            case 5:{ // Imprimir estudiantes
                                 course_copy->printStudents();
                                 break;
                             }
-                            case 6:{
+                            case 6:{ // Imprimir nota del curso
                                 cout << "Introducir el legajo del estudiante: ";
                                 cin >> file;
-                                for(auto i : cs){
+                                for(auto i : cs){ // Me fijo si existe el estudiante
                                     if(i->get_file() == file){
                                         j = 1;
                                         break;
@@ -350,26 +362,28 @@ void menu(){
                                     delete i;
                                 }
                                 Student* student_copy;
-                                if(j == 1) student_copy = cs[cont];
+                                if(j == 1) student_copy = cs[cont]; // Si existe hago una copia para trabajar
                                 else{
                                     cout << "No existe estudiante con ese legajo" << endl;
                                     break;
                                 }
                                 vector<Course*> student_course_list = student_copy->get_course_list();
                                 vector<int> student_grade_list = student_copy->get_grade_list();
-                                for(int i = 0; i < (int)student_grade_list.size(); i++){
-                                    if(student_course_list[i]->getCourseName() == n){
-                                        cout << "La nota de " << student_copy->get_fullName() << " del curso de " << n << " es " << student_grade_list[i] << endl;
+                                for(int i = 0; i < (int)student_grade_list.size(); i++){ 
+                                    if(student_course_list[i]->getCourseName() == n){ // Itero en la lista de los cursos a los que está inscripto el estudiante el estudiante para guardarme la posición
+                                        cout << "La nota de " << student_copy->get_fullName() << " del curso de " << n << " es " << student_grade_list[i] << endl; // De ese modo se que la posición del curso coincide con la de su nota en el otro vector
+                                        j = 0;
                                         break;
                                     }
                                 }
+                                if(j == 1) cout << "El estudiante no forma parte de este curso." << endl;
                                 break;
                             }
-                            case 7:{
+                            case 7:{ // Cambiar de curso
                                 cond2 = false;
                                 break;
                             }
-                            case 8:{
+                            case 8:{ // Salir
                                 cond2 = false;
                                 cond1 = false;
                                 break;
@@ -383,7 +397,7 @@ void menu(){
                 }
                 break;
             }
-            case 5:{
+            case 5:{ // Salir
                 first_cond = false;
                 break;
             }

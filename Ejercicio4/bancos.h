@@ -6,34 +6,34 @@ using namespace std;
 
 class Banco{
     public:
-        Banco();
-        void depositar();
-        void retirar();
+        Banco(string titularCuenta) : titularCuenta(titularCuenta) {}
+        void depositar(double cant);
+        virtual double retirar(double cant) = 0;
     
     private:
         double balance;
-        double balance();
-        void mostrarInfo();
+        virtual void mostrarInfo() = 0;
 
     protected:
-        string titularCuenta();
+        string titularCuenta;
 };
 
 
-class CajaDeAhorro : private Banco {
+class CajaDeAhorro : public Banco {
     public:
-        CajaDeAhorro();
-        void retirar();
-    
+        CajaDeAhorro(string titularCuenta) : Banco(titularCuenta) {}
+        double retirar(double cant) override {}
+        void mostrarInfo() override {}
     private:
         double balance;
-        void mostrarInfo();
 };
 
 
-class CuentaCorriente : private Banco{
+class CuentaCorriente : public Banco{
     public: 
-        CuentaCorriente();
-        void retirar();
-
+        CuentaCorriente(string titularCuenta) : Banco(titularCuenta) {}
+        double retirar(double cant) override;
+        friend class CajaDeAhorro;
+    private:
+        double balance;
 };
